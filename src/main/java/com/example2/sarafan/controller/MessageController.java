@@ -1,11 +1,14 @@
 package com.example2.sarafan.controller;
 
 import com.example2.sarafan.domain.Message;
+import com.example2.sarafan.domain.Views;
 import com.example2.sarafan.repo.MessageRepo;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -20,18 +23,22 @@ public class MessageController {
     }
 
     @GetMapping
+    @JsonView(Views.IdName.class)
     public List<Message> list() {
 
         return messageRepo.findAll();
     }
 
     @GetMapping("{id}")
+    @JsonView(Views.FullMessage.class)
     public Message getOne(@PathVariable("id") Message message) {
         return message;
     }
 
     @PostMapping
     public Message create(@RequestBody Message message) {
+        message.setCreationData(LocalDateTime.now());
+
         return messageRepo.save(message);
     }
 
